@@ -42,7 +42,7 @@ Compaction must run **without disrupting active SQL queries**.
 - **DuckDB**: unified SQL query engine
 - **Parquet**: lakehouse storage format
 - **PostgreSQL**: relational source and metadata
-- **MinIO**: S3-compatible object store
+- **MinIO**: S3-compatible object store (or RustFS becaude os MinIO deprecation)
 
 ## Principles
 
