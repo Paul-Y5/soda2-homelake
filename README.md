@@ -56,6 +56,13 @@ Compaction must run **without disrupting active SQL queries**.
 - Technical report (up to 3,000 words).
 - In-class presentation.
 
+## Documentation
+
+| Document | Purpose |
+|---|---|
+| [docs/HW02.pdf](docs/HW02.pdf) | Assignment brief (Option B) |
+| [docs/state-of-art.md](docs/state-of-art.md) | Literature review and innovation opportunities |
+
 ## Future Vision
 
 HomeLake could later be adapted to a **Smart Home** setting, with data from sensors, energy use, temperature, humidity and devices. This is **out of scope** for the current assignment.
