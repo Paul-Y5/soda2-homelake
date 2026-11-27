@@ -1,0 +1,96 @@
+<mxfile host="drawio">
+  <diagram id="homelake-arch" name="HomeLake architecture">
+    <mxGraphModel dx="1000" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="800" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Sources -->
+        <mxCell id="sources" value="&lt;b&gt;Sources&lt;/b&gt;&lt;br&gt;CSV · JSON · Parquet · PostgreSQL&lt;br&gt;&lt;i&gt;stretch: XML · Avro · ORC · Excel · PDF · API&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="280" y="20" width="420" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Monitor -->
+        <mxCell id="monitor" value="&lt;b&gt;Monitor&lt;/b&gt;&lt;br&gt;new / changed / removed&lt;br&gt;files &amp;amp; tables" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="60" y="150" width="170" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Ingestion -->
+        <mxCell id="ingest" value="&lt;b&gt;Ingestion pipeline&lt;/b&gt;&lt;br&gt;connector → schema inspector&lt;br&gt;→ staging writer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="330" y="150" width="210" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Catalog -->
+        <mxCell id="catalog" value="&lt;b&gt;Catalog (PostgreSQL)&lt;/b&gt;&lt;br&gt;datasets · sources · schema_versions · snapshots · snapshot_files · read_leases · jobs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="290" width="720" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Query service -->
+        <mxCell id="query" value="&lt;b&gt;Query Service&lt;/b&gt;&lt;br&gt;DuckDB (httpfs, postgres, json…)&lt;br&gt;unified SQL over pinned snapshot" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="60" y="440" width="250" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Compactor -->
+        <mxCell id="compactor" value="&lt;b&gt;Compactor middleware&lt;/b&gt;&lt;br&gt;monitor partitions → bin-pack →&lt;br&gt;write → commit → GC later" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="440" y="440" width="250" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- RustFS container -->
+        <mxCell id="rustfs" value="&lt;b&gt;RustFS (S3 API)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="60" y="600" width="720" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="bronze" value="&lt;b&gt;bronze/&lt;/b&gt;&lt;br&gt;raw files, original format, immutable" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="80" y="640" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="silver" value="&lt;b&gt;silver/&lt;/b&gt;&lt;br&gt;Parquet, normalized,&lt;br&gt;partitioned, compacted" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;" vertex="1" parent="1">
+          <mxGeometry x="310" y="640" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="gold" value="&lt;b&gt;gold/&lt;/b&gt;&lt;br&gt;curated aggregates for the demo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="540" y="640" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Edges -->
+        <mxCell id="e1" value="watch" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;endArrow=block;exitX=0;exitY=0.3;entryX=0.5;entryY=0;" edge="1" parent="1" source="sources" target="monitor">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="trigger" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" edge="1" parent="1" source="monitor" target="ingest">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="ingest (copy raw)" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;exitX=0.155;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="sources" target="ingest">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="commit snapshot (atomic)" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;exitX=0.5;exitY=1;entryX=0.45;entryY=0;" edge="1" parent="1" source="ingest" target="catalog">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="write bronze + silver (staging)" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;exitX=1;exitY=0.5;entryX=1;entryY=0.3;" edge="1" parent="1" source="ingest" target="rustfs">
+          <mxGeometry x="0.15" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="830" y="185" />
+              <mxPoint x="830" y="639" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" value="attach (query in place)" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;endArrow=block;exitX=0;exitY=0.8;entryX=0;entryY=0.5;" edge="1" parent="1" source="sources" target="query">
+          <mxGeometry x="0.55" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="20" y="76" />
+              <mxPoint x="20" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" value="pin snapshot + read lease" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;startArrow=block;exitX=0.5;exitY=0;entryX=0.174;entryY=1;" edge="1" parent="1" source="query" target="catalog">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="commit new snapshot (CAS)&lt;br&gt;check leases before GC" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;startArrow=block;exitX=0.5;exitY=0;entryX=0.701;entryY=1;" edge="1" parent="1" source="compactor" target="catalog">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="read" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;exitX=0.5;exitY=1;entryX=0.174;entryY=0;" edge="1" parent="1" source="query" target="rustfs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="read small / write compacted" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;startArrow=block;exitX=0.5;exitY=1;entryX=0.701;entryY=0;" edge="1" parent="1" source="compactor" target="rustfs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

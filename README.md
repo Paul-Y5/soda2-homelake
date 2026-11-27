@@ -21,7 +21,7 @@ Support for different data formats and sources:
 | Tabular documents | Excel |
 | Documents | PDF |
 | Relational databases | e.g. PostgreSQL |
-| Object stores | e.g. MinIO, Amazon S3 |
+| Object stores | e.g. RustFS, MinIO, Amazon S3 |
 | APIs | REST / HTTP sources |
 
 ### 2. Unified SQL
@@ -42,7 +42,7 @@ Compaction must run **without disrupting active SQL queries**.
 - **DuckDB**: unified SQL query engine
 - **Parquet**: lakehouse storage format
 - **PostgreSQL**: relational source and metadata
-- **MinIO**: S3-compatible object store (or RustFS becaude os MinIO deprecation)
+- **RustFS**: S3-compatible object store (Apache 2.0; replaces MinIO, whose open-source edition is no longer maintained)
 
 ## Principles
 
@@ -62,6 +62,7 @@ Compaction must run **without disrupting active SQL queries**.
 |---|---|
 | [docs/HW02.pdf](docs/HW02.pdf) | Assignment brief (Option B) |
 | [docs/state-of-art.md](docs/state-of-art.md) | Literature review and innovation opportunities |
+| [docs/architecture.md](docs/architecture.md) | Baseline architecture, components and experiments |
 
 ## Future Vision
 
